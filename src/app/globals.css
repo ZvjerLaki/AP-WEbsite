@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
 
 :root {
   --background: #ffffff;
@@ -23,4 +25,104 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ── Scroll-triggered animations ──────────────────────────────────────────── */
+
+/*
+ * Elements carry their "from" state via a modifier class (fade-in-up,
+ * slide-in-left, stagger-children). The useIntersectionObserver hook adds
+ * `animate-in` once the element crosses the viewport threshold, which
+ * CSS transitions to the "to" state.
+ *
+ * Hero elements use immediate: true in the hook so `animate-in` is applied
+ * on mount without waiting for an intersection event.
+ */
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.fade-in-up.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.slide-in-left.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Each direct child fades up; delays are applied via nth-child when animate-in
+   is present on the parent. */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.stagger-children.animate-in > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.stagger-children.animate-in > *:nth-child(1)  { transition-delay: 0.10s; }
+.stagger-children.animate-in > *:nth-child(2)  { transition-delay: 0.20s; }
+.stagger-children.animate-in > *:nth-child(3)  { transition-delay: 0.30s; }
+.stagger-children.animate-in > *:nth-child(4)  { transition-delay: 0.40s; }
+.stagger-children.animate-in > *:nth-child(5)  { transition-delay: 0.50s; }
+.stagger-children.animate-in > *:nth-child(6)  { transition-delay: 0.60s; }
+.stagger-children.animate-in > *:nth-child(7)  { transition-delay: 0.70s; }
+.stagger-children.animate-in > *:nth-child(8)  { transition-delay: 0.80s; }
+.stagger-children.animate-in > *:nth-child(9)  { transition-delay: 0.90s; }
+.stagger-children.animate-in > *:nth-child(10) { transition-delay: 1.00s; }
+.stagger-children.animate-in > *:nth-child(11) { transition-delay: 1.10s; }
+.stagger-children.animate-in > *:nth-child(12) { transition-delay: 1.20s; }
+
+/* Honour the user's motion preference — skip all transitions. */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-up,
+  .slide-in-left,
+  .stagger-children > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Hide scrollbar (carousel tracks) ─────────────────────────────────────── */
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Hero AP mark background animation ────────────────────────────────────── */
+
+@keyframes hero-mark-emerge {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero-mark-bg {
+  animation: hero-mark-emerge 2s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mark-bg {
+    animation: none;
+  }
 }
