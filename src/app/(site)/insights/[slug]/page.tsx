@@ -41,7 +41,7 @@ interface RelatedPost {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const FETCH_OPTS = { next: { revalidate: 3600, tags: ['insights'] } };
+const FETCH_OPTS = { next: { revalidate: 3600, tags: ['insights'] as string[] } };
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string }> = {
   article: { label: 'Article', color: '#185FA5' },

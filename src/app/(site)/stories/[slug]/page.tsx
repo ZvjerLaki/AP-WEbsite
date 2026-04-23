@@ -39,7 +39,7 @@ interface RelatedStory {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const FETCH_OPTS = { next: { revalidate: 3600, tags: ['stories'] } };
+const FETCH_OPTS = { next: { revalidate: 3600, tags: ['stories'] as string[] } };
 
 function ArrowRight() {
   return (
