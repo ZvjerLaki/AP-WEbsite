@@ -41,7 +41,6 @@ interface RelatedPost {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const FETCH_OPTS = { next: { revalidate: 3600, tags: ['insights'] as string[] } };
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string }> = {
   article: { label: 'Article', color: '#185FA5' },
@@ -93,7 +92,7 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = await client.fetch<Post | null>(POST_PAGE_QUERY, { slug }, FETCH_OPTS);
+  const post = await client.fetch<Post | null>(POST_PAGE_QUERY, { slug }, { next: { revalidate: 3600, tags: ['insights'] } });
   if (!post) return {};
 
   const title = post.seo?.metaTitle ?? post.title;
@@ -120,14 +119,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function InsightPage({ params }: Props) {
   const { slug } = await params;
 
-  const post = await client.fetch<Post | null>(POST_PAGE_QUERY, { slug }, FETCH_OPTS);
+  const post = await client.fetch<Post | null>(POST_PAGE_QUERY, { slug }, { next: { revalidate: 3600, tags: ['insights'] } });
   if (!post) notFound();
 
   const relatedPosts = post.category
     ? await client.fetch<RelatedPost[]>(
         RELATED_INSIGHTS_QUERY,
         { category: post.category, slug },
-        FETCH_OPTS,
+        { next: { revalidate: 3600, tags: ['insights'] } },
       )
     : [];
 

@@ -39,7 +39,6 @@ interface RelatedStory {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const FETCH_OPTS = { next: { revalidate: 3600, tags: ['stories'] as string[] } };
 
 function ArrowRight() {
   return (
@@ -92,7 +91,7 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const story = await client.fetch<Story | null>(STORY_PAGE_QUERY, { slug }, FETCH_OPTS);
+  const story = await client.fetch<Story | null>(STORY_PAGE_QUERY, { slug }, { next: { revalidate: 3600, tags: ['stories'] } });
   if (!story) return {};
 
   const title = story.seo?.metaTitle ?? story.title;
@@ -121,13 +120,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function StoryPage({ params }: Props) {
   const { slug } = await params;
 
-  const story = await client.fetch<Story | null>(STORY_PAGE_QUERY, { slug }, FETCH_OPTS);
+  const story = await client.fetch<Story | null>(STORY_PAGE_QUERY, { slug }, { next: { revalidate: 3600, tags: ['stories'] } });
   if (!story) notFound();
 
   const relatedStories = await client.fetch<RelatedStory[]>(
     RELATED_STORIES_QUERY,
     { slug },
-    FETCH_OPTS,
+    { next: { revalidate: 3600, tags: ['stories'] } },
   );
 
   const heroImageUrl = story.heroImage
